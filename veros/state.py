@@ -3,6 +3,8 @@ from collections import defaultdict, namedtuple
 from collections.abc import Mapping
 from copy import deepcopy
 
+from ipdb import set_trace
+
 from veros import (
     timer,
     plugins,
@@ -234,7 +236,10 @@ class VerosVariables(Lockable, StrictContainer):
         else:
             expected_dtype = rs.float_type
 
-        val = rst.backend_module.asarray(val, dtype=expected_dtype)
+        if type(val) in [float, int] : 
+            set_trace()
+            print(key, val, type(val))
+        #val = rst.backend_module.asarray(val, dtype=expected_dtype)
 
         expected_shape = self._get_expected_shape(var.dims)
         if val.shape != expected_shape:

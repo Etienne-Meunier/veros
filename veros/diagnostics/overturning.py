@@ -140,7 +140,9 @@ class Overturning(VerosDiagnostic):
             val = getattr(ovt_vs, var)
             setattr(ovt_vs, var, val * 0)
 
-        ovt_vs.nitts = 0
+        from veros import runtime_state as rst
+
+        ovt_vs.nitts = rst.backend_module.asarray(0)
 
 
 @veros_kernel
