@@ -236,12 +236,10 @@ class VerosVariables(Lockable, StrictContainer):
         else:
             expected_dtype = rs.float_type
 
-        if type(val) in [float, int] : 
-            set_trace()
-            print(key, val, type(val))
-        #val = rst.backend_module.asarray(val, dtype=expected_dtype)
+        if not isinstance(val, rst.backend_module.ndarray) : 
+            #print(key, val, type(val))
+            val = rst.backend_module.asarray(val, dtype=expected_dtype)
 
-        print('modified')
         expected_shape = self._get_expected_shape(var.dims)
         if val.shape != expected_shape:
             raise ValueError(f"Got unexpected shape for variable {key} (expected: {expected_shape}, got: {val.shape})")

@@ -148,13 +148,10 @@ class Energy(VerosDiagnostic):
 
         self.write_output(state)
 
-        # E : What are they doing here ? 
-        # TODO : Replace 0.0 by a backend value
-        from veros import runtime_state as rst
         for key in self.output_variables:
-            setattr(energy_vs, key, rst.backend_module.asarray(0.0))
+            setattr(energy_vs, key, 0)
 
-        energy_vs.nitts = rst.backend_module.asarray(0)
+        energy_vs.nitts = 0
 
 
 @veros_kernel
