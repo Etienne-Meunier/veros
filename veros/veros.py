@@ -257,10 +257,10 @@ class VerosSetup(metaclass=abc.ABCMeta):
                     idemix.set_idemix_parameter(state)
 
             with state.timers["eke"]:
-                eke.set_eke_diffusivities(state)
+                eke.set_eke_diffusivities(state) # Nsqr -> K_m, K_iso (L_rossby ...)
 
             with state.timers["tke"]:
-                tke.set_tke_diffusivities(state)
+                tke.set_tke_diffusivities(state) # Nsqr, tke -> KappaM, KappaH, Rinumber, K_diss_v
 
             with state.timers["momentum"]:
                 momentum.momentum(state)

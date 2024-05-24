@@ -5,6 +5,7 @@ from veros.core.operators import numpy as npx, update_multiply, at
 from veros.diagnostics.base import VerosDiagnostic
 from veros.variables import Variable
 from veros.distributed import global_sum
+from veros import runtime_state as rst
 
 
 ENERGY_VARIABLES = dict(
@@ -149,9 +150,10 @@ class Energy(VerosDiagnostic):
         self.write_output(state)
 
         for key in self.output_variables:
-            setattr(energy_vs, key, 0)
+            setattr(energy_vs, key, rst.backend_module.asarray(0.0))
 
-        energy_vs.nitts = 0
+        energy_vs.nitts = rst.backend_module.asarray(0.0)
+
 
 
 @veros_kernel

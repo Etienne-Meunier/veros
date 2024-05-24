@@ -7,7 +7,7 @@ from veros.core import density
 from veros.variables import Variable, allocate
 from veros.distributed import global_sum
 from veros.core.operators import numpy as npx, update, update_add, at, for_loop
-
+from veros import runtime_state as rst
 
 VARIABLES = {
     "nitts": Variable("nitts", None, write_to_restart=True),
@@ -138,9 +138,9 @@ class Overturning(VerosDiagnostic):
                 continue
 
             val = getattr(ovt_vs, var)
-            setattr(ovt_vs, var, val * 0)
+            setattr(ovt_vs, var, val * rst.backend_module.asarray(0.0))
 
-        ovt_vs.nitts = 0
+        ovt_vs.nitts = rst.backend_module.asarray(0.0)
 
 
 @veros_kernel

@@ -3,6 +3,7 @@ import copy
 
 from veros.diagnostics.base import VerosDiagnostic
 from veros.variables import TIMESTEPS, Variable
+from veros import runtime_state as rst
 
 
 class Averages(VerosDiagnostic):
@@ -78,4 +79,4 @@ class Averages(VerosDiagnostic):
             val = getattr(avg_vs, key)
             setattr(avg_vs, key, 0 * val)
 
-        avg_vs.average_nitts = 0
+        avg_vs.average_nitts = rst.backend_module.asarray(0.0)

@@ -237,8 +237,8 @@ class VerosVariables(Lockable, StrictContainer):
             expected_dtype = rs.float_type
 
         if not isinstance(val, rst.backend_module.ndarray) : 
-            #print(key, val, type(val))
-            val = rst.backend_module.asarray(val, dtype=expected_dtype)
+            print(key, type(val))
+            #val = rst.backend_module.asarray(val, dtype=expected_dtype)
 
         expected_shape = self._get_expected_shape(var.dims)
         if val.shape != expected_shape:
