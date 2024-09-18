@@ -285,12 +285,12 @@ def linear_bottom_friction(state):
         mask = npx.arange(settings.nz) == k[:, :, npx.newaxis]
 
         vs.du_mix = update_add(
-            vs.du_mix, at[1:-2, 2:-2], -1 * vs.maskU[1:-2, 2:-2] * settings.r_bot * vs.u[1:-2, 2:-2, :, vs.tau] * mask
+            vs.du_mix, at[1:-2, 2:-2], -1 * vs.maskU[1:-2, 2:-2] * vs.r_bot * vs.u[1:-2, 2:-2, :, vs.tau] * mask
         )
         if settings.enable_conserve_energy:
             diss = allocate(state.dimensions, ("xt", "yu", "zt"))
             diss = update(
-                diss, at[1:-2, 2:-2], vs.maskU[1:-2, 2:-2] * settings.r_bot * vs.u[1:-2, 2:-2, :, vs.tau] ** 2 * mask
+                diss, at[1:-2, 2:-2], vs.maskU[1:-2, 2:-2] * vs.r_bot * vs.u[1:-2, 2:-2, :, vs.tau] ** 2 * mask
             )
             vs.K_diss_bot = update_add(vs.K_diss_bot, at[...], numerics.calc_diss_u(state, diss))
 
@@ -298,12 +298,12 @@ def linear_bottom_friction(state):
         mask = npx.arange(settings.nz) == k[:, :, npx.newaxis]
 
         vs.dv_mix = update_add(
-            vs.dv_mix, at[2:-2, 1:-2], -1 * vs.maskV[2:-2, 1:-2] * settings.r_bot * vs.v[2:-2, 1:-2, :, vs.tau] * mask
+            vs.dv_mix, at[2:-2, 1:-2], -1 * vs.maskV[2:-2, 1:-2] * vs.r_bot * vs.v[2:-2, 1:-2, :, vs.tau] * mask
         )
         if settings.enable_conserve_energy:
             diss = allocate(state.dimensions, ("xt", "yu", "zt"))
             diss = update(
-                diss, at[2:-2, 1:-2], vs.maskV[2:-2, 1:-2] * settings.r_bot * vs.v[2:-2, 1:-2, :, vs.tau] ** 2 * mask
+                diss, at[2:-2, 1:-2], vs.maskV[2:-2, 1:-2] * vs.r_bot * vs.v[2:-2, 1:-2, :, vs.tau] ** 2 * mask
             )
             vs.K_diss_bot = update_add(vs.K_diss_bot, at[...], numerics.calc_diss_v(state, diss))
 

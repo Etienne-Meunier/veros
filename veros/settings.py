@@ -72,7 +72,7 @@ SETTINGS = {
     "A_h": Setting(0.0, float, "lateral viscosity in m^2/s"),
     "K_h": Setting(0.0, float, "lateral diffusivity in m^2/s"),
     "r_ray": Setting(0.0, float, "Rayleigh damping coefficient in 1/s"),
-    "r_bot": Setting(0.0, float, "bottom friction coefficient in 1/s"),
+    #"r_bot": Setting(0.0, float, "bottom friction coefficient in 1/s"),
     "r_quad_bot": Setting(0.0, float, "qudratic bottom friction coefficient"),
     "hor_friction_cosPower": Setting(3, float, "power to scale cos term by in horizontal friction"),
     "A_hbi": Setting(0.0, float, "lateral biharmonic viscosity in m^4/s"),

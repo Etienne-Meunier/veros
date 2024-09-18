@@ -2,6 +2,10 @@ import contextlib
 from collections import defaultdict, namedtuple
 from collections.abc import Mapping
 from copy import deepcopy
+from jax.tree_util import tree_map
+import jax.numpy as jnp
+import numpy as np
+import jax
 
 from ipdb import set_trace
 
@@ -236,7 +240,7 @@ class VerosVariables(Lockable, StrictContainer):
         else:
             expected_dtype = rs.float_type
 
-        if not isinstance(val, rst.backend_module.ndarray) : 
+        if not isinstance(val, rst.backend_module.ndarray) :
             print(key, type(val))
             #val = rst.backend_module.asarray(val, dtype=expected_dtype)
 
@@ -443,6 +447,36 @@ class VerosState:
         attrs = dict(self.settings.items())
 
         return xr.Dataset(data_vars, coords=coords, attrs=attrs)
+
+    def copy(self) :
+        """
+        dimensions = deepcopy(self._dimensions)
+        settings_meta = deepcopy(self.settings.__metadata__)
+        plugin_interfaces = deepcopy(self._plugin_interfaces)
+        var_meta = deepcopy(self._var_meta)
+
+        state_copy = VerosState(var_meta, settings_meta, dimensions, plugin_interfaces=plugin_interfaces)
+
+        with state_copy.settings.unlock() :
+            for k, v in self.settings.items() :
+                state_copy.settings.__setattr__(k, v)
+
+        state_copy._variables = deepcopy(self._variables)
+        state_copy.timers = deepcopy(self.timers)
+        state_copy.profile_timers =  deepcopy(self.profile_timers)
+        return state_copy
+        """
+        return tree_map(lambda x : x.copy(), self)
+
+    def zeros(self) : 
+        """
+        Return a copy full of zeros
+        """
+        def set_to_zero(x):
+            if jnp.issubdtype(x.dtype, jnp.integer) or jnp.issubdtype(x.dtype, jnp.bool) : 
+                return np.zeros_like(x, dtype=jax.dtypes.float0)
+            return jnp.zeros_like(x) 
+        return tree_map(lambda x : set_to_zero(x), self)
 
 
 def get_default_state(plugin_interfaces=()):

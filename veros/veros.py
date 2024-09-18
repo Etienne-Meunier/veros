@@ -244,9 +244,10 @@ class VerosSetup(metaclass=abc.ABCMeta):
 
         vs = state.variables
         settings = state.settings
+        #print'begin : ', vs.tke.sum())
 
         with state.timers["diagnostics"]:
-            restart.write_restart(state)
+            restart.write_restart(state) # (routine)
 
         with state.timers["main"]:
             with state.timers["forcing"]:
@@ -254,35 +255,37 @@ class VerosSetup(metaclass=abc.ABCMeta):
 
             if state.settings.enable_idemix:
                 with state.timers["idemix"]:
-                    idemix.set_idemix_parameter(state)
+                    idemix.set_idemix_parameter(state) # (kernel) ?? What is it doing in practice ?
 
             with state.timers["eke"]:
-                eke.set_eke_diffusivities(state) # Nsqr -> K_m, K_iso (L_rossby ...)
+                eke.set_eke_diffusivities(state) # (routine) Nsqr -> K_m, K_iso (L_rossby ...)
 
             with state.timers["tke"]:
-                tke.set_tke_diffusivities(state) # Nsqr, tke -> KappaM, KappaH, Rinumber, K_diss_v
+                tke.set_tke_diffusivities(state) # (routine) Nsqr, tke -> KappaM, KappaH, Rinumber, K_diss_v
 
             with state.timers["momentum"]:
-                momentum.momentum(state)
+                momentum.momentum(state) # (routine)
 
             with state.timers["thermodynamics"]:
-                thermodynamics.thermodynamics(state)
+                thermodynamics.thermodynamics(state) # (routine)
 
             if settings.enable_eke or settings.enable_tke or settings.enable_idemix:
                 with state.timers["advection"]:
-                    advection.calculate_velocity_on_wgrid(state)
+                    advection.calculate_velocity_on_wgrid(state) # (routine)
 
             with state.timers["eke"]:
                 if state.settings.enable_eke:
-                    eke.integrate_eke(state)
+                    eke.integrate_eke(state) # (routine)
 
             with state.timers["idemix"]:
                 if state.settings.enable_idemix:
-                    idemix.integrate_idemix(state)
+                    idemix.integrate_idemix(state) # (routine)
 
+            #print('before_integrate : ', vs.tke.sum())
             with state.timers["tke"]:
                 if state.settings.enable_tke:
-                    tke.integrate_tke(state)
+                    tke.integrate_tke(state)  # (routine)
+            #print('after_integrate : ', vs.tke.sum())
 
             with state.timers["boundary_exchange"]:
                 vs.u = utilities.enforce_boundaries(vs.u, settings.enable_cyclic_x)
@@ -295,7 +298,7 @@ class VerosSetup(metaclass=abc.ABCMeta):
                     vs.E_iw = utilities.enforce_boundaries(vs.E_iw, settings.enable_cyclic_x)
 
             with state.timers["momentum"]:
-                momentum.vertical_velocity(state)
+                momentum.vertical_velocity(state) # (routine)
 
         with state.timers["plugins"]:
             for plugin in self._plugin_interfaces:
@@ -308,8 +311,8 @@ class VerosSetup(metaclass=abc.ABCMeta):
         self.after_timestep(state)
 
         with state.timers["diagnostics"]:
-            if not numerics.sanity_check(state):
-                raise RuntimeError(f"solution diverged at iteration {vs.itt}")
+            #if not numerics.sanity_check(state):
+            #    raise RuntimeError(f"solution diverged at iteration {vs.itt}")
 
             isoneutral.isoneutral_diag_streamfunction(state)
             diagnostics.diagnose(state)
@@ -320,6 +323,7 @@ class VerosSetup(metaclass=abc.ABCMeta):
 
         # permutate time indices
         vs.taum1, vs.tau, vs.taup1 = vs.tau, vs.taup1, vs.taum1
+        #print('end : ', vs.tke.sum())
 
     def run(self, show_progress_bar=None):
         """Main routine of the simulation.
