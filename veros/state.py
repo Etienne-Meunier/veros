@@ -241,8 +241,9 @@ class VerosVariables(Lockable, StrictContainer):
             expected_dtype = rs.float_type
 
         if not isinstance(val, rst.backend_module.ndarray) :
-            print(key, type(val))
+            #print(key, type(val))
             #val = rst.backend_module.asarray(val, dtype=expected_dtype)
+            pass
 
         expected_shape = self._get_expected_shape(var.dims)
         if val.shape != expected_shape:
@@ -468,7 +469,7 @@ class VerosState:
         """
         return tree_map(lambda x : x.copy(), self)
 
-    def zeros(self) : 
+    def get_tangeant(self, var_key) : 
         """
         Return a copy full of zeros
         """
@@ -476,8 +477,12 @@ class VerosState:
             if jnp.issubdtype(x.dtype, jnp.integer) or jnp.issubdtype(x.dtype, jnp.bool) : 
                 return np.zeros_like(x, dtype=jax.dtypes.float0)
             return jnp.zeros_like(x) 
-        return tree_map(lambda x : set_to_zero(x), self)
 
+        tangeant_state = tree_map(lambda x : set_to_zero(x), self)
+        with tangeant_state.variables.unlock() : 
+            tangeant_state.variables.__setattr__(var_key,
+                        tangeant_state.variables.__getattr__(var_key)+1.)
+        return tangeant_state
 
 def get_default_state(plugin_interfaces=()):
     if isinstance(plugin_interfaces, plugins.VerosPlugin):
