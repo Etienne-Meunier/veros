@@ -178,6 +178,29 @@ def flush_jax():
         # if we are jitting, dummy is not a DeviceArray that we can wait for
         pass
 
+import jax.numpy as jnp
+from jax import custom_jvp,jit
+
+@custom_jvp
+def s_sqrt(x):
+    return jnp.sqrt(x)
+
+@s_sqrt.defjvp
+def s_sqrt_jvp(primals, tangents):
+    x, = primals
+    x_dot, = tangents
+    
+    # Regular sqrt for primal
+    primal_out = jnp.sqrt(x)
+    
+    #gradient = 0.5 / jnp.sqrt(jnp.maximum(x, 0.001))
+    gradient = 0.5 / jnp.maximum(0.03162278, primal_out) #jnp.sqrt(0.001) = 0.03162278
+    return primal_out, gradient * x_dot
+
+
+@jit
+def safe_sqrt(x) :
+    return s_sqrt(x)
 
 numpy = runtime_state.backend_module
 
@@ -205,3 +228,4 @@ elif runtime_settings.backend == "jax":
 
 else:
     raise ValueError(f"Unrecognized backend {runtime_settings.backend}")
+
