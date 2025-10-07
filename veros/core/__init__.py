@@ -9,7 +9,10 @@ def build_all():
     from veros import runtime_settings as rs
     from veros.backend import BACKEND_MESSAGES, get_curent_device_name
 
+    logger.info("Differentiable Veros Experimental version")
+
     logger.info("Importing core modules")
+
 
     logger.opt(colors=True).info(
         " Using computational backend <bold>{}</bold> on <bold>{}</bold>", rs.backend, get_curent_device_name()
