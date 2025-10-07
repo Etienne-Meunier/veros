@@ -16,6 +16,19 @@ from veros.core.operators import update, update_add, at, for_loop
 from veros.core.operators import numpy as npx
 from veros.core.external.solvers import get_linear_solver
 
+from jax import lax
+
+def update_psi(vs_psi, vs_itt, vs_taup1, linear_sol):
+    def case0(_):
+        # vs.itt == 0
+        return update(vs_psi, at[...], linear_sol[..., None])
+    
+    def case1(_):
+        # vs.itt != 0
+        return update(vs_psi, at[..., vs_taup1], linear_sol)
+    
+    return lax.cond(vs_itt == 0, case0, case1, operand=None)
+
 
 @veros_routine
 def solve_pressure(state):
@@ -27,10 +40,11 @@ def solve_pressure(state):
     linear_sol = linear_solver.solve(state, forc, vs.psi[..., vs.taup1])
     linear_sol = mainutils.enforce_boundaries(linear_sol, state.settings.enable_cyclic_x)
 
-    if vs.itt == 0:
-        vs.psi = update(vs.psi, at[...], linear_sol[..., npx.newaxis])
-    else:
-        vs.psi = update(vs.psi, at[..., vs.taup1], linear_sol)
+    # if vs.itt == 0:
+    #     vs.psi = update(vs.psi, at[...], linear_sol[..., npx.newaxis])
+    # else:
+    #     vs.psi = update(vs.psi, at[..., vs.taup1], linear_sol)
+    vs.psi = update_psi(vs.psi, vs.itt, vs.taup1, linear_sol)
 
     vs.update(barotropic_velocity_update(state))
 
