@@ -1,3 +1,11 @@
+# Auto-diff Veros Branch
+
+This branch display the ongoing works on auto-differentiation of veros code. It doesn't change the use of veros as an ocean model
+
+For example of differentiation usage : https://github.com/Etienne-Meunier/Veros-Autodiff
+
+# Original VEROS Doc
+
 <p align="center">
 <img src="doc/_images/veros-logo-400px.png?raw=true">
 </p>

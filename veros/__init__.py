@@ -1,4 +1,4 @@
-"""Veros, the versatile ocean simulator"""
+"""AutodiffVeros, the versatile ocean simulator"""
 
 import sys
 import types
