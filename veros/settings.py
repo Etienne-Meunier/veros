@@ -86,7 +86,7 @@ SETTINGS = {
     "enable_TEM_friction": Setting(False, bool, "TEM approach for eddy-driven velocities"),
     "K_iso_0": Setting(0.0, float, "constant for isopycnal diffusivity in m^2/s"),
     "K_iso_steep": Setting(0.0, float, "lateral diffusivity for steep slopes in m^2/s"),
-    "K_gm_0": Setting(0.0, float, "fixed value for K_gm which is set for no EKE model"),
+    #"K_gm_0": Setting(0.0, float, "fixed value for K_gm which is set for no EKE model"),
     "iso_dslope": Setting(0.0008, float, "parameters controlling max allowed isopycnal slopes"),
     "iso_slopec": Setting(0.001, float, "parameters controlling max allowed isopycnal slopes"),
     # Idemix 1.0

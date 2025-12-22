@@ -69,7 +69,7 @@ def set_eke_diffusivities_kernel(state):
         """
         use fixed GM diffusivity
         """
-        vs.K_gm = update(vs.K_gm, at[...], settings.K_gm_0)
+        vs.K_gm = update(vs.K_gm, at[...], vs.K_gm_0)
 
     if settings.enable_eke and settings.enable_eke_isopycnal_diffusion:
         vs.K_iso = update(vs.K_iso, at[...], vs.K_gm)

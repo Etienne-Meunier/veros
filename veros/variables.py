@@ -537,6 +537,7 @@ VARIABLES = {
         dtype="bool",
         active=lambda settings: settings.enable_streamfunction,
     ),
+    "K_gm_0": Variable("fixed value for K_gm which is set for no EKE model", None, "m^2/s", "fixed KGM", initial=0.0),
     "K_gm": Variable("Skewness diffusivity", W_GRID, "m^2/s", "GM diffusivity, either constant or from EKE model"),
     "K_iso": Variable("Isopycnal diffusivity", W_GRID, "m^2/s", "Along-isopycnal diffusivity"),
     "K_diss_v": Variable(
