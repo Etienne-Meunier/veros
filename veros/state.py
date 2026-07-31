@@ -1,5 +1,5 @@
 import contextlib
-from collections import defaultdict, namedtuple
+from collections import namedtuple
 from collections.abc import Mapping
 from copy import deepcopy
 from jax.tree_util import tree_map
@@ -10,7 +10,6 @@ import jax
 from ipdb import set_trace
 
 from veros import (
-    timer,
     plugins,
     settings as settings_mod,
     variables as var_mod,
@@ -346,10 +345,6 @@ class VerosState:
         else:
             self._plugin_interfaces = ()
 
-        timer_factory = timer.Timer
-        self.timers = defaultdict(timer_factory)
-        self.profile_timers = defaultdict(timer_factory)
-
     def __repr__(self):
         from textwrap import indent
 
@@ -463,8 +458,6 @@ class VerosState:
                 state_copy.settings.__setattr__(k, v)
 
         state_copy._variables = deepcopy(self._variables)
-        state_copy.timers = deepcopy(self.timers)
-        state_copy.profile_timers =  deepcopy(self.profile_timers)
         return state_copy
         """
         return tree_map(lambda x : x.copy(), self)

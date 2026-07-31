@@ -308,14 +308,12 @@ def momentum(state):
     """
     vs.update(momentum_advection(state))
 
-    with state.timers["friction"]:
-        friction.friction(state)
+    friction.friction(state)
 
     """
     external mode
     """
-    with state.timers["pressure"]:
-        if state.settings.enable_streamfunction:
-            external.solve_streamfunction(state)
-        else:
-            external.solve_pressure(state)
+    if state.settings.enable_streamfunction:
+        external.solve_streamfunction(state)
+    else:
+        external.solve_pressure(state)

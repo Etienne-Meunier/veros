@@ -51,12 +51,7 @@ CURRENT_CONTEXT.mpi4jax_token = None
 
 
 @contextmanager
-def nullcontext():
-    yield
-
-
-@contextmanager
-def enter_routine(name, routine_obj, timer=None, dist_safe=True):
+def enter_routine(name, routine_obj, dist_safe=True):
     from veros import runtime_state as rst
     from veros.distributed import abort
 
@@ -71,11 +66,8 @@ def enter_routine(name, routine_obj, timer=None, dist_safe=True):
             CURRENT_CONTEXT.is_dist_safe = False
             reset_dist_safe = True
 
-    timer_ctx = nullcontext() if timer is None else timer
-
     try:
-        with timer_ctx:
-            yield
+        yield
 
     except:  # noqa: E722
         if reset_dist_safe:
@@ -89,11 +81,7 @@ def enter_routine(name, routine_obj, timer=None, dist_safe=True):
         r = stack.pop()
         assert r is routine_obj
 
-        exec_time = ""
-        if timer is not None:
-            exec_time = f"({timer.last_time:.3f}s)"
-
-        logger.trace("<{} {} {}", "-" * stack.stack_level, name, exec_time)
+        logger.trace("<{} {}", "-" * stack.stack_level, name)
 
 
 # helper functions
@@ -186,8 +174,6 @@ class VerosRoutine:
         if not isinstance(veros_state, VerosState):
             raise TypeError(f"Argument {self.state_argnum} to this Veros routine must be a VerosState object")
 
-        timer = veros_state.profile_timers[self.name]
-
         with ExitStack() as es:
             vars_initialized = veros_state._variables is not None
 
@@ -206,7 +192,7 @@ class VerosRoutine:
 
                 execute = rst.proc_rank == 0
 
-            routine_ctx = enter_routine(name=self.name, routine_obj=self, timer=timer, dist_safe=self.dist_safe)
+            routine_ctx = enter_routine(name=self.name, routine_obj=self, dist_safe=self.dist_safe)
 
             out = None
             try:
@@ -349,14 +335,8 @@ class VerosKernel:
 
         called_with_state = veros_state is not None
 
-        # when profiling, make sure all inputs are ready before starting the timer
         if runtime_settings.profile_mode:
             flush()
-
-        if called_with_state:
-            timer = veros_state.profile_timers[self.name]
-        else:
-            timer = None
 
         with ExitStack() as es:
             if called_with_state:
@@ -367,7 +347,7 @@ class VerosKernel:
             if inject_tokens:
                 args.append(CURRENT_CONTEXT.mpi4jax_token)
 
-            with enter_routine(self.name, self, timer):
+            with enter_routine(self.name, self):
                 out = self.function(*args)
 
                 if runtime_settings.profile_mode:

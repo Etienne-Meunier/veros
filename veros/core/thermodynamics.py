@@ -406,46 +406,42 @@ def thermodynamics(state):
     """
     horizontal diffusion
     """
-    with state.timers["isoneutral"]:
-        if settings.enable_hor_diffusion:
-            vs.update(diffusion.tempsalt_diffusion(state))
+    if settings.enable_hor_diffusion:
+        vs.update(diffusion.tempsalt_diffusion(state))
 
-        if settings.enable_biharmonic_mixing:
-            vs.update(diffusion.tempsalt_biharmonic(state))
+    if settings.enable_biharmonic_mixing:
+        vs.update(diffusion.tempsalt_biharmonic(state))
 
-        """
-        sources like restoring zones, etc
-        """
-        if settings.enable_tempsalt_sources:
-            vs.update(diffusion.tempsalt_sources(state))
+    """
+    sources like restoring zones, etc
+    """
+    if settings.enable_tempsalt_sources:
+        vs.update(diffusion.tempsalt_sources(state))
 
-        """
-        isopycnal diffusion
-        """
-        if settings.enable_neutral_diffusion:
-            vs.P_diss_iso = update(vs.P_diss_iso, at[...], 0.0)
-            vs.dtemp_iso = update(vs.dtemp_iso, at[...], 0.0)
-            vs.dsalt_iso = update(vs.dsalt_iso, at[...], 0.0)
+    """
+    isopycnal diffusion
+    """
+    if settings.enable_neutral_diffusion:
+        vs.P_diss_iso = update(vs.P_diss_iso, at[...], 0.0)
+        vs.dtemp_iso = update(vs.dtemp_iso, at[...], 0.0)
+        vs.dsalt_iso = update(vs.dsalt_iso, at[...], 0.0)
 
-            vs.update(isoneutral.isoneutral_diffusion_pre(state))
-            vs.update(isoneutral.isoneutral_diffusion(state, tr=vs.temp, istemp=True))
-            vs.update(isoneutral.isoneutral_diffusion(state, tr=vs.salt, istemp=False))
+        vs.update(isoneutral.isoneutral_diffusion_pre(state))
+        vs.update(isoneutral.isoneutral_diffusion(state, tr=vs.temp, istemp=True))
+        vs.update(isoneutral.isoneutral_diffusion(state, tr=vs.salt, istemp=False))
 
-            if settings.enable_skew_diffusion:
-                vs.P_diss_skew = update(vs.P_diss_skew, at[...], 0.0)
-                vs.update(isoneutral.isoneutral_skew_diffusion(state, tr=vs.temp, istemp=True))
-                vs.update(isoneutral.isoneutral_skew_diffusion(state, tr=vs.salt, istemp=False))
+        if settings.enable_skew_diffusion:
+            vs.P_diss_skew = update(vs.P_diss_skew, at[...], 0.0)
+            vs.update(isoneutral.isoneutral_skew_diffusion(state, tr=vs.temp, istemp=True))
+            vs.update(isoneutral.isoneutral_skew_diffusion(state, tr=vs.salt, istemp=False))
 
-    with state.timers["vmix"]:
-        vs.update(vertmix_tempsalt(state))
+    vs.update(vertmix_tempsalt(state))
 
-    with state.timers["eq_of_state"]:
-        vs.update(calc_eq_of_state(state, vs.taup1))
+    vs.update(calc_eq_of_state(state, vs.taup1))
 
     """
     surface density flux
     """
     vs.update(surf_densityf(state))
 
-    with state.timers["vmix"]:
-        vs.update(diag_P_diss_v(state))
+    vs.update(diag_P_diss_v(state))
