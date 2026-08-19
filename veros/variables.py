@@ -587,6 +587,8 @@ VARIABLES = {
         "Potential energy dissipation by external sources (e.g. restoring zones)",
     ),
     "r_bot": Variable("bottom friction coefficient", None, "1/s", "bottom friction coefficient", initial=0.0),
+    "c_k": Variable("TKE mixing length constant", None, "", "TKE mixing length constant", initial=0.1),
+    "c_eps": Variable("TKE dissipation constant", None, "", "TKE dissipation constant", initial=0.7),
     "u_wgrid": Variable("U on W grid", W_GRID, "m/s", "Zonal velocity interpolated to W grid points"),
     "v_wgrid": Variable("V on W grid", W_GRID, "m/s", "Meridional velocity interpolated to W grid points"),
     "w_wgrid": Variable("W on W grid", W_GRID, "m/s", "Vertical velocity interpolated to W grid points"),

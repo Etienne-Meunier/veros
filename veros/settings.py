@@ -104,8 +104,8 @@ SETTINGS = {
     "enable_idemix_upwind_advection": Setting(False, bool, ""),
     # TKE
     "enable_tke": Setting(False, bool, ""),
-    "c_k": Setting(0.1, float, ""),
-    "c_eps": Setting(0.7, float, ""),
+    #"c_k": Setting(0.1, float, ""),
+    #"c_eps": Setting(0.7, float, ""),
     "alpha_tke": Setting(1.0, float, ""),
     "mxl_min": Setting(1e-12, float, ""),
     "kappaM_min": Setting(0.0, float, ""),

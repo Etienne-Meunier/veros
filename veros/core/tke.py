@@ -70,7 +70,7 @@ def set_tke_diffusivities_kernel(state):
     calculate viscosity and diffusivity based on Prandtl number
     """
     vs.K_diss_v = utilities.enforce_boundaries(vs.K_diss_v, settings.enable_cyclic_x)
-    vs.kappaM = update(vs.kappaM, at[...], npx.minimum(settings.kappaM_max, settings.c_k * vs.mxl * vs.sqrttke))
+    vs.kappaM = update(vs.kappaM, at[...], npx.minimum(settings.kappaM_max, vs.c_k * vs.mxl * vs.sqrttke))
     Rinumber = update(
         Rinumber, at[...], vs.Nsqr[:, :, :, vs.tau] / npx.maximum(vs.K_diss_v / npx.maximum(1e-12, vs.kappaM), 1e-12)
     )
@@ -204,19 +204,19 @@ def integrate_tke_kernel(state):
         at[:, :, 1:-1],
         1
         + (delta[:, :, 1:-1] + delta[:, :, :-2]) / vs.dzw[npx.newaxis, npx.newaxis, 1:-1]
-        + dt_tke * settings.c_eps * vs.sqrttke[2:-2, 2:-2, 1:-1] / vs.mxl[2:-2, 2:-2, 1:-1],
+        + dt_tke * vs.c_eps * vs.sqrttke[2:-2, 2:-2, 1:-1] / vs.mxl[2:-2, 2:-2, 1:-1],
     )
     b_tri = update(
         b_tri,
         at[:, :, -1],
         1
         + delta[:, :, -2] / (0.5 * vs.dzw[-1])
-        + dt_tke * settings.c_eps / vs.mxl[2:-2, 2:-2, -1] * vs.sqrttke[2:-2, 2:-2, -1],
+        + dt_tke * vs.c_eps / vs.mxl[2:-2, 2:-2, -1] * vs.sqrttke[2:-2, 2:-2, -1],
     )
     b_tri_edge = (
         1
         + delta / vs.dzw[npx.newaxis, npx.newaxis, :]
-        + dt_tke * settings.c_eps / vs.mxl[2:-2, 2:-2, :] * vs.sqrttke[2:-2, 2:-2, :]
+        + dt_tke * vs.c_eps / vs.mxl[2:-2, 2:-2, :] * vs.sqrttke[2:-2, 2:-2, :]
     )
 
     c_tri = update(c_tri, at[:, :, :-1], -delta[:, :, :-1] / vs.dzw[npx.newaxis, npx.newaxis, :-1])
@@ -230,7 +230,7 @@ def integrate_tke_kernel(state):
     """
     store tke dissipation for diagnostics
     """
-    vs.tke_diss = settings.c_eps / vs.mxl * vs.sqrttke * vs.tke[:, :, :, vs.taup1]
+    vs.tke_diss = vs.c_eps / vs.mxl * vs.sqrttke * vs.tke[:, :, :, vs.taup1]
 
     """
     Add TKE if surface density flux drains TKE in uppermost box
