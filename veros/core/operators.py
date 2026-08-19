@@ -189,12 +189,11 @@ def s_sqrt(x):
 def s_sqrt_jvp(primals, tangents):
     x, = primals
     x_dot, = tangents
-    
+
     # Regular sqrt for primal
     primal_out = jnp.sqrt(x)
-    
-    #gradient = 0.5 / jnp.sqrt(jnp.maximum(x, 0.001))
-    gradient = 0.5 / jnp.maximum(0.03162278, primal_out) #jnp.sqrt(0.001) = 0.03162278
+
+    gradient = 0.5 / jnp.maximum(1e-6, primal_out)
     return primal_out, gradient * x_dot
 
 
