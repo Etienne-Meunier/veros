@@ -148,7 +148,7 @@ def get_drhodp(state, salt_loc, temp_loc, press_loc):
     elif settings.eq_of_state_type == 4:
         return nq3.nonlin3_eq_of_state_drhodp()
     elif settings.eq_of_state_type == 5:
-        return gsw.gsw_drhodp(salt_loc, temp_loc, press_loc)
+        return gsw.gsw_drhodP(salt_loc, temp_loc, press_loc)
     else:
         raise ValueError("unknown equation of state")
 
