@@ -395,7 +395,7 @@ def gsw_dyn_enthalpy(sa_in, ct_in, p):
     b1 = 0.5 * (v12 + ct * (v13 + v14 * ct) + sa * (v15 + v16 * ct))
     b2 = v17 + ct * (v18 + v19 * ct) + v20 * sa
     b1sq = b1 * b1
-    sqrt_disc = npx.sqrt(b1sq - b0 * b2)
+    sqrt_disc = safe_sqrt(b1sq - b0 * b2)
     cn = a0 + (2 * a3 * b0 * b1 / b2 - a2 * b0) / b2
     cm = a1 + (4 * a3 * b1sq / b2 - a3 * b0 - 2 * a2 * b1) / b2
     ca = b1 - sqrt_disc
@@ -500,7 +500,7 @@ def gsw_dHdT(sa_in, ct_in, p):
         + t217 * t20
     )
     t241 = t64 - t92 * t19
-    t242 = npx.sqrt(t241)
+    t242 = safe_sqrt(t241)
     t243 = 1.0 / t242
     t244 = t4 + t8 + t12 - t242
     t245 = 1.0 / t244
@@ -636,7 +636,7 @@ def gsw_dHdS(sa_in, ct_in, p):
     t174 = 2.0 * t87 * t158 - t72 * t86
     t189 = v21 + ct * (v22 + ct * (v23 + ct * (v24 + v25 * ct))) + sa * (v26 + t142 + t143 + t152) + t174 * t14
     t196 = t52 - t86 * t13
-    t197 = npx.sqrt(t196)
+    t197 = safe_sqrt(t196)
     t198 = 1.0 / t197
     t199 = t17 + t21 + t24 - t197
     t200 = 1.0 / t199
