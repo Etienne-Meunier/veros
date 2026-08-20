@@ -88,10 +88,10 @@ RuntimeSetting = namedtuple("RuntimeSetting", ("type", "default", "read_from_env
 RuntimeSetting.__new__.__defaults__ = (None, None, True)
 
 AVAILABLE_SETTINGS = {
-    "backend": RuntimeSetting(parse_choice(BACKENDS), "numpy"),
+    "backend": RuntimeSetting(parse_choice(BACKENDS), "jax"),
     "device": RuntimeSetting(parse_choice(DEVICES), "cpu"),
     "float_type": RuntimeSetting(parse_choice(FLOAT_TYPES), "float64"),
-    "linear_solver": RuntimeSetting(parse_choice(LINEAR_SOLVERS), "best"),
+    "linear_solver": RuntimeSetting(parse_choice(LINEAR_SOLVERS), "scipy_jax"),
     "petsc_options": RuntimeSetting(str, ""),
     "monitor_streamfunction_residual": RuntimeSetting(parse_bool, True),
     "num_proc": RuntimeSetting(parse_two_ints, (1, 1), read_from_env=False),
